@@ -1,4 +1,4 @@
-import { getProductById, getProducts } from "@/services/productService";
+import { getProductById } from "@/services/productService";
 import Image from "next/image";
 
 export default function ProductDetails({ product }) {
@@ -6,7 +6,7 @@ export default function ProductDetails({ product }) {
     <div className="max-w-4xl mx-auto bg-white p-6 rounded-xl shadow-sm">
       <div className="w-full h-80 relative mb-6">
         <Image
-          src={product.thumbnail}
+          src={product.thumbnail || "/placeholder.jpg"}
           alt={product.title}
           fill
           className="object-contain rounded-lg"
@@ -30,13 +30,10 @@ export default function ProductDetails({ product }) {
 }
 
 export async function getStaticPaths() {
-  const data = await getProducts();
-
-  const paths = data.products.map((p) => ({
-    params: { id: p.id.toString() },
-  }));
-
-  return { paths, fallback: false };
+  return {
+    paths: [],
+    fallback: "blocking",
+  };
 }
 
 export async function getStaticProps({ params }) {
@@ -44,5 +41,6 @@ export async function getStaticProps({ params }) {
 
   return {
     props: { product },
+    revalidate: 10,
   };
 }
