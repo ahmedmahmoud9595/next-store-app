@@ -1,8 +1,11 @@
+import { signIn, signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
 export default function Navbar() {
   const router = useRouter();
+
+  const { data: session } = useSession();
 
   const linkClass = (path) =>
     router.pathname === path
@@ -28,6 +31,30 @@ export default function Navbar() {
           <Link href="/products" className={linkClass("/products")}>
             Products
           </Link>
+
+          {!session ? (
+            <Link
+              href="/api/auth/signin"
+              onClick={signIn}
+              className="bg-brand text-white px-4 py-2 rounded-md"
+            >
+              Sign In
+            </Link>
+          ) : (
+            <>
+              <Link
+                href="/api/auth/signout"
+                onClick={signOut}
+                className="border border-brand text-brand px-4 py-2 rounded-md"
+              >
+                Sign Out
+              </Link>
+
+              <span className="text-xs bg-brand text-white px-2 py-1 rounded-lg">
+                Logged In
+              </span>
+            </>
+          )}
         </div>
       </div>
     </nav>

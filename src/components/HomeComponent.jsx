@@ -1,7 +1,10 @@
 import React from "react";
 import Link from "next/link";
+import { signIn, useSession } from "next-auth/react";
 
 const HomeComponent = () => {
+  const { data: session } = useSession();
+
   return (
     <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-bg">
       <div className="absolute w-[500px] h-[500px] bg-brand/30 blur-3xl rounded-full top-[-100px] left-[-100px]" />
@@ -22,15 +25,25 @@ const HomeComponent = () => {
             href="/products"
             className="bg-brand text-white px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition"
           >
-            Browse Products
+            {session ? "All Products" : "Sample Products"}
           </Link>
 
-          <Link
-            href="/products/create"
-            className="border border-brand text-brand px-6 py-3 rounded-lg font-semibold hover:bg-soft transition"
-          >
-            Add Your Product
-          </Link>
+          {!session ? (
+            <Link
+              href="/api/auth/signin"
+              onClick={signIn}
+              className="border border-brand text-brand px-6 py-3 rounded-md font-semibold hover:bg-brand hover:text-white transition"
+            >
+              Sign In
+            </Link>
+          ) : (
+            <Link
+              href="/products/create"
+              className="border border-brand text-brand px-6 py-3 rounded-lg font-semibold hover:bg-soft transition"
+            >
+              Add Your Product
+            </Link>
+          )}
         </div>
 
         <div className="mt-10 flex justify-center gap-10 text-sm text-gray-500">
